@@ -1,5 +1,6 @@
 package com.ap.springsecuritydemo.config;
 
+import com.ap.springsecuritydemo.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -17,15 +18,22 @@ public class SecurityConfigurator extends WebSecurityConfigurerAdapter {
     @Autowired
     DataSource dataSource;
 
+    @Autowired
+    MyUserDetailsService userDetailsService;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        //JDBC authentication with H2 embedded database, which creates database
-        auth.jdbcAuthentication()
-                //This makes connectivity with H2
-                .dataSource(dataSource);
-        //NOTE: Roles are Case sensitive
-
+        //JPA authentication with UserDetails
+        auth.userDetailsService(userDetailsService);
     }
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        //JDBC authentication with H2 embedded database, which creates database
+//        auth.jdbcAuthentication()
+//                //This makes connectivity with H2
+//                .dataSource(dataSource);
+//        //NOTE: Roles are Case sensitive
+//
+//    }
 
 //    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 //        //JDBC authentication with H2 embedded database, which creates database, with adding users
