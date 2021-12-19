@@ -16,18 +16,28 @@ import javax.sql.DataSource;
 public class SecurityConfigurator extends WebSecurityConfigurerAdapter {
     @Autowired
     DataSource dataSource;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         //JDBC authentication with H2 embedded database, which creates database
         auth.jdbcAuthentication()
                 //This makes connectivity with H2
-                .dataSource(dataSource)
-                // This creates default tables like User and Authentication
-                .withDefaultSchema()
-                .withUser(User.withUsername("aparna").password("aparna").roles("admin"))
-                .withUser(User.withUsername("test").password("test").roles("user"));
+                .dataSource(dataSource);
+        //NOTE: Roles are Case sensitive
 
     }
+
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        //JDBC authentication with H2 embedded database, which creates database, with adding users
+//        auth.jdbcAuthentication()
+//                //This makes connectivity with H2
+//                .dataSource(dataSource)
+//                // This creates default tables like User and Authentication
+//                .withDefaultSchema()
+//                .withUser(User.withUsername("aparna").password("aparna").roles("admin"))
+//                .withUser(User.withUsername("test").password("test").roles("user"));
+//
+//    }
 
 //    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 //        //In memory authentication
@@ -45,8 +55,8 @@ public class SecurityConfigurator extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/ap/admin").hasRole("admin")
-                .antMatchers("/ap/user").hasAnyRole("user","admin")
+                .antMatchers("/ap/admin").hasRole("ADMIN")
+                .antMatchers("/ap/user").hasAnyRole("ADMIN","USER")
                 .antMatchers("/ap/home").permitAll()
                 .and().formLogin();
     }
